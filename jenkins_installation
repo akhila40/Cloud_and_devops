@@ -1,0 +1,21 @@
+#!/bin/bash
+sudo apt-get update
+sudo wget -O /usr/share/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key
+echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update
+
+#This is to install jenkins
+sudo apt-get install jenkins -y
+
+#This is to install java
+sudo apt-get install openjdk-17-jre -y
+#java --version
+
+#Place this script in user data when creating a EC2 to automate the task
+#after executing the above commands run the below commands
+#sudo systemctl enable jenkins
+#sudo systemctl start jenkins
+#sudo systemctl status jenkins
