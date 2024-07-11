@@ -1,0 +1,49 @@
+Master-Slave Architecture in Jenkins
+Master: The Jenkins master is the main server instance. It manages jobs, builds, and distributes them to agents (slaves). The master schedules builds, monitors agents, and coordinates the overall workload.
+
+Slave (Agent): A Jenkins slave, or agent, is a worker machine that executes the jobs dispatched by the master. Agents can be configured on different operating systems and environments to accommodate diverse build requirements.
+
+Diagram:
+
+  +------------------------+
+  |       Jenkins          |
+  |        Master          |
+  +------------------------+
+            |
+            | (Manages)
+            |
+  +---------v-----------------+        +----------------------+
+  |          Jenkins          |        |       Jenkins        |
+  |           Slave           |        |        Slave         |
+  |         (Agent)           |        |       (Agent)        |
+  |     Linux / Windows       |        |     macOS / Linux    |
+  +---------------------------+        +----------------------+
+Jenkins Master: The central server responsible for:
+
+Scheduling jobs.
+Monitoring agents.
+Distributing build requests.
+Jenkins Slaves (Agents): These are the worker nodes that:
+
+Receive build jobs from the master.
+Execute the jobs in their respective environments.
+Report back to the master with build results.
+How it works:
+Job Execution: When a job is triggered, the Jenkins master selects an available agent based on predefined criteria (like label expressions or capabilities).
+
+Distributed Builds: Jobs can be distributed across multiple agents, allowing parallel execution and efficient resource utilization.
+
+Configuration: Agents are configured with specific tools and environments necessary for job execution, such as different operating systems, software versions, or hardware configurations.
+
+Scalability and Flexibility: This architecture allows Jenkins to scale horizontally by adding more agents to handle increased workload or diverse build requirements.
+
+Benefits:
+Resource Utilization: Efficiently distributes workload across multiple machines, optimizing resource usage.
+
+Parallel Execution: Enables concurrent execution of jobs, reducing overall build time.
+
+Flexibility: Supports different operating systems and environments for diverse build requirements.
+
+Fault Tolerance: If one agent fails, jobs can be rerouted to other available agents, ensuring continuous build operations.
+
+In summary, the master-slave architecture in Jenkins enhances scalability, flexibility, and efficiency in managing continuous integration and continuous delivery (CI/CD) pipelines by distributing workload across multiple nodes.
