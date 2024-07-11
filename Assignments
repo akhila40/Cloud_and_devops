@@ -1,0 +1,3 @@
+Write a pipeline script to send email messages upon successful build and build failure.
+
+Write a pipeline to take a backup of all the jobs daily @9am [Hint: All the jobs are stored in var/lib/jenkins/workspace]
