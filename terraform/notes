@@ -1,0 +1,16 @@
+Install Terraform: 
+1. https://hashicorp-terraform.awsworkshop.io/030_self_guided_setup/37_install_terraform_cli.html
+2. https://developer.hashicorp.com/terraform/tutorials/aws-get-started/aws-build
+
+Install aws cli:
+1. sudo apt install unzip
+2. curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+3. sudo ./aws/install
+
+Verify the installation : /usr/local/bin/aws --version
+Configure the aws : aws configure
+                    Enter your Access key and security credentials from aws
+
+
+Reference: https://registry.terraform.io/providers/hashicorp/aws/latest/docs
