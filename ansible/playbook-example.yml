@@ -1,0 +1,33 @@
+--- #start of the yaml file
+- name: Install and start nginx
+  hosts: all #this considers everything in the inventory
+  become: yes # this will make the playbook run as root, possible values [become: yes === become: true; become: no === become: false]
+
+  tasks: #indicates lists of tasks
+    - name: Install nginx #nginx -> A high performance web server
+      apt:
+        name: nginx
+        state: present #possible values: present, absent, latest, held
+
+    - name: Start nginx
+      service:
+        name: nginx
+        state: started #possible values: started, stopped, restarted, reloaded
+
+  
+- name: Install and start httpd
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd
+      apt:
+        name: httpd
+        state: present
+
+    - name: start httpd
+      service:
+        name: httpd
+        state: started
+
+... #end of the yml file
