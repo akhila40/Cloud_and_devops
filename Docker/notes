@@ -1,0 +1,92 @@
+Reference: https://docs.docker.com/
+
+#This is to deploy react application
+
+Deploying your React.js application to AWS using Docker involves several steps. Below, I'll guide you through deploying the application using Amazon Elastic Beanstalk, which simplifies the process of deploying and managing applications in the AWS cloud.
+
+Step-by-Step Guide:
+1. Set Up Your AWS Account:
+If you don't have an AWS account, sign up at AWS.
+2. Install the AWS CLI:
+Download and install the AWS CLI from here.
+Configure the AWS CLI with your credentials:
+
+Prepare Your React Application:
+Ensure your React.js project has a Dockerfile in the root directory. Here is an example Dockerfile:
+
+# Use the official Node.js image.
+FROM node:14
+
+# Create and change to the app directory.
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+COPY package*.json ./
+
+# Install dependencies.
+RUN npm install
+
+# Copy local code to the container image.
+COPY . .
+
+# Build the React application
+RUN npm run build
+
+# Install serve to serve the build files
+RUN npm install -g serve
+
+# Run the app
+CMD ["serve", "-s", "build"]
+
+EXPOSE 5000
+
+Putting It All Together
+When you build and run this Docker container, the following happens:
+
+Docker pulls the Node.js version 14 image.
+The working directory inside the container is set to /usr/src/app.
+The dependency files (package.json and package-lock.json) are copied to the container.
+Dependencies are installed using npm install.
+The entire application code is copied to the container.
+The React application is built, producing static files in the build directory.
+serve is installed globally to serve the built files.
+The container is set to run serve in SPA mode to serve the files in the build directory.
+Port 5000 is exposed, indicating that the application will be accessible via this port inside the container.
+You can then run this container, and it will serve your React.js application, making it accessible on port 5000.
+
+Install Elastic Beanstalk CLI:
+Install the Elastic Beanstalk CLI (EB CLI) following the instructions here.
+
+Initialize Elastic Beanstalk Application:
+In your project directory, initialize an Elastic Beanstalk application:
+
+eb init
+
+Follow the prompts to select your region, application name, and other settings. Choose Docker as the platform.
+
+Create an Environment:
+Create an environment and deploy your application:
+
+Deploy Your Application:
+To deploy your application, run
+
+eb deploy
+
+
+Access Your Application:
+Once the deployment is complete, you can access your application using the URL provided by Elastic Beanstalk. You can get this URL by running:
+
+eb open
+
+
+Additional Details:
+Configuring Domain Name (Optional):
+If you have a custom domain, you can point it to your Elastic Beanstalk environment by configuring a CNAME record in your DNS settings. The CNAME should point to the URL provided by Elastic Beanstalk.
+Updating the Application:
+To update your application, make your changes, commit them to your Git repository, and run:
+eb deploy
+
+
+Monitoring and Managing the Environment:
+You can use the Elastic Beanstalk web console to monitor and manage your environment. The console provides tools for viewing logs, managing environment settings, and scaling your application.
+By following these steps, you can deploy your React.js application using Docker on AWS Elastic Beanstalk, making it accessible on the internet. This approach leverages the power of AWS to manage the underlying infrastructure, allowing you to focus on developing your application.

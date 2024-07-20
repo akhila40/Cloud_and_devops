@@ -1,0 +1,20 @@
+1. Create EC2
+2. Connect to the EC2
+3. Execute these commands
+    //update existing packages
+    > sudo apt update -y
+    
+    //install docker
+    > sudo apt install docker.io -y
+
+    //add ubuntu users users to the docker
+    > sudo usermod -aG docker ubuntu
+
+    //Restart
+    >logout
+
+    //connect to the EC2 and run this command to verify the installation
+    >docker run hello-world
+
+    //to check the container
+    >docker ps
