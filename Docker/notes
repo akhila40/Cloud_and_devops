@@ -1,5 +1,55 @@
 Reference: https://docs.docker.com/
 
+
+#Docker Fundamentals:
+
+Container: Container is a isolated environment to run any code or application
+Images: Images are used to run containers
+
+You can build an image using the following docker build command via a CLI in your project folder.
+docker build -t welcome-to-docker .
+Breaking down this command
+
+The -t flag tags your image with a name. (welcome-to-docker in this case). And the . lets Docker know where it can find the Dockerfile.
+
+Run your container
+Once the build is complete, an image will appear in the Images tab. Select the image name to see its details. Select Run to run it as a container. In the Optional settings remember to specify a port number (something like 8089).
+
+ here's a simplified explanation of a typical Docker workflow:
+
+Developing an Application:
+
+You start by developing your application using your preferred programming language and frameworks. This application could be anything from a web server to a microservice or a database.
+Writing Dockerfile:
+
+Next, you create a Dockerfile. This file defines the steps needed to create a Docker image for your application. It specifies the base image, copies your application code into the image, installs dependencies, and configures the environment.
+Building Docker Image:
+
+Using the Dockerfile, you build a Docker image. This process involves running the docker build command, which reads the Dockerfile, executes the instructions, and creates a ready-to-run Docker image that contains your application and its dependencies.
+Running Docker Container:
+
+Once the Docker image is built, you can run it as a Docker container using the docker run command. A Docker container is an instance of a Docker image that runs as a lightweight, isolated process on the host machine. Running a container starts your application and any services it requires.
+Testing and Iteration:
+
+With your application running in a Docker container, you can test its functionality to ensure everything works as expected. If changes are needed, you can modify your application code and repeat the Docker image build and container run steps.
+Deploying Docker Containers:
+
+When you're satisfied with your application and want to deploy it, you can push your Docker image to a Docker registry (like Docker Hub, AWS ECR, or a private registry). This allows others or different environments (like production servers) to pull and run your Docker image.
+Scaling and Managing Containers:
+
+Docker enables you to easily scale your application by running multiple instances of your Docker containers across different hosts or on a single host using orchestration tools like Docker Compose (for development) or Kubernetes (for production).
+Monitoring and Maintenance:
+
+Docker provides tools and integrations for monitoring the performance of your Docker containers and managing their lifecycle. You can monitor resource usage, logs, and health status, and perform maintenance tasks like updating containers with new versions of your application.
+Continuous Integration/Continuous Deployment (CI/CD):
+
+Docker is often integrated into CI/CD pipelines to automate the build, test, and deployment processes. CI/CD tools can automatically build Docker images, run tests inside containers, and deploy updated images to production environments.
+Overall, Docker simplifies the process of packaging, distributing, and running applications by providing a consistent environment across different platforms and making it easier to manage dependencies and configurations.
+
+
+
+
+
 #This is to deploy react application
 
 Deploying your React.js application to AWS using Docker involves several steps. Below, I'll guide you through deploying the application using Amazon Elastic Beanstalk, which simplifies the process of deploying and managing applications in the AWS cloud.
