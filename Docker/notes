@@ -231,3 +231,55 @@ EXPOSE 80: Exposes port 80, which Nginx uses.
 CMD ["nginx", "-g", "daemon off;"]: Starts the Nginx server in the foreground.
 Optional: Custom Nginx Configuration
 If you have specific requirements for your Nginx server configuration, you can add a custom nginx.conf file by uncommenting and adjusting the relevant line in the Dockerfile.
+
+Distroless Images:
+
+To create a distroless Docker image for a React application using multi-stage builds, you'll want to use one stage for building the React app and another stage for serving the app using a minimal, distroless image. For serving static files, you can use the gcr.io/distroless/static image, which is designed for serving static content.
+
+Here's an example Dockerfile for a React application using this approach:
+# Stage 1: Build the React app
+FROM node:18 AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application source code
+COPY . .
+
+# Build the React app
+RUN npm run build
+
+# Stage 2: Serve the React app using a distroless image
+FROM gcr.io/distroless/static
+
+# Copy the build output from the previous stage to the distroless image
+COPY --from=build /app/build /app
+
+# Expose port 8080
+EXPOSE 8080
+
+# Set the entrypoint to serve the static files
+ENTRYPOINT ["static-server", "/app", "--port", "8080"]
+
+Explanation:
+Build Stage:
+
+FROM node:18 AS build: Uses a Node.js image to build the React application. The AS build part names this stage "build."
+WORKDIR /app: Sets the working directory in the container to /app.
+COPY package.json ./:* Copies package.json and package-lock.json to the container, followed by RUN npm install to install dependencies.
+COPY . .: Copies the rest of the application source code to the container.
+RUN npm run build: Builds the React application, with the output stored in the build directory.
+Runtime Stage:
+
+FROM gcr.io/distroless/static: Uses a distroless image for serving static content, which is minimal and secure.
+COPY --from=build /app/build /app: Copies the build output from the build stage to the /app directory in the distroless image.
+EXPOSE 8080: Exposes port 8080, typically used for serving HTTP traffic.
+ENTRYPOINT ["static-server", "/app", "--port", "8080"]: Uses the static-server command to serve the static files from the /app directory on port 8080.
+Note:
+The gcr.io/distroless/static image includes the static-server binary, which is a simple server for serving static files. Ensure that this tool is suitable for your needs or replace it with a different method if required.
