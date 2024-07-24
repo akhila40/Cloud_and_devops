@@ -140,3 +140,94 @@ eb deploy
 Monitoring and Managing the Environment:
 You can use the Elastic Beanstalk web console to monitor and manage your environment. The console provides tools for viewing logs, managing environment settings, and scaling your application.
 By following these steps, you can deploy your React.js application using Docker on AWS Elastic Beanstalk, making it accessible on the internet. This approach leverages the power of AWS to manage the underlying infrastructure, allowing you to focus on developing your application.
+
+
+Multi stage docker builds
+
+Multi-stage Docker builds are a feature in Docker that allow you to use multiple FROM statements in a single Dockerfile, effectively creating different stages in the build process. This approach helps in optimizing Docker images by allowing you to:
+
+Separate the Build Environment from the Runtime Environment:
+
+The first stages (or stages early in the Dockerfile) are typically used for compiling, building, or setting up the application. These stages might require a full development environment with all the necessary tools and libraries.
+The final stage is usually a minimal environment where the application runs. This stage only contains what is needed to execute the application, such as the compiled binaries or built assets.
+Reduce Image Size:
+
+By copying only the necessary artifacts from the build stages into the final image, you avoid including unnecessary dependencies and tools. This results in a smaller, more efficient Docker image.
+Improve Security:
+
+Minimizing the final image reduces the attack surface by excluding unnecessary tools, libraries, and other files that could be exploited.
+Example of a Multi-Stage Build Process
+Consider a React application as an example:
+
+Build Stage:
+
+You use a Node.js image to install dependencies and build the application. This stage includes all the necessary tools like npm or yarn, compilers, etc.
+Runtime Stage:
+
+After building the application, you use a minimal Nginx image to serve the built static files. This stage does not need Node.js, compilers, or any of the build tools, so they are not included in the final image.
+Here's a simplified breakdown of what happens in each stage:
+
+Stage 1: Build Environment
+
+Install dependencies.
+Compile and build the application.
+Produce build artifacts (e.g., static files for a web app, binaries for a compiled application).
+
+Stage 2: Runtime Environment
+
+Set up a minimal base image suitable for running the application (e.g., an Alpine Linux image with Nginx).
+Copy the build artifacts from the previous stage into the runtime environment.
+Configure the runtime environment to serve the application (e.g., configuring Nginx to serve the static files).
+By isolating the build and runtime environments, you ensure that the final Docker image is lean, efficient, and only contains the essentials for running the application.
+
+Using multi-stage Docker builds can help optimize the size of your Docker images by separating the build and runtime environments. Here's an example Dockerfile for a React application using multi-stage builds:
+
+# Stage 1: Build the React app
+FROM node:18 AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application source code
+COPY . .
+
+# Build the React app
+RUN npm run build
+
+# Stage 2: Serve the app with a lightweight server
+FROM nginx:alpine
+
+# Copy the build output from the previous stage to the Nginx web server
+COPY --from=build /app/build /usr/share/nginx/html
+
+# Copy custom Nginx configuration file, if needed (optional)
+# COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]
+Explanation:
+Stage 1: Build Stage
+
+FROM node:18 AS build: Uses a Node.js image to build the React application. The AS build part names this stage "build."
+WORKDIR /app: Sets the working directory in the container to /app.
+COPY package*.json ./: Copies package.json and package-lock.json to the container.
+RUN npm install: Installs dependencies.
+COPY . .: Copies the rest of the application source code to the container.
+RUN npm run build: Builds the React application. The output will be in the build directory.
+Stage 2: Serve Stage
+
+FROM nginx:alpine: Uses a lightweight Nginx image to serve the static files.
+COPY --from=build /app/build /usr/share/nginx/html: Copies the build output from the first stage to the Nginx server's default directory.
+EXPOSE 80: Exposes port 80, which Nginx uses.
+CMD ["nginx", "-g", "daemon off;"]: Starts the Nginx server in the foreground.
+Optional: Custom Nginx Configuration
+If you have specific requirements for your Nginx server configuration, you can add a custom nginx.conf file by uncommenting and adjusting the relevant line in the Dockerfile.
