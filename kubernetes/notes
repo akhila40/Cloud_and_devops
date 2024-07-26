@@ -1,0 +1,103 @@
+Kubernetes is a popular open-source platform designed for automating the deployment, scaling, and management of containerized applications. Its architecture is built on a set of core components that work together to manage resources and workloads in a cluster. Here's an overview of Kubernetes architecture and components, along with a typical workflow:
+
+Kubernetes Architecture
+Cluster: A Kubernetes cluster consists of at least one master node and several worker nodes.
+
+Master Node: The master node manages the Kubernetes cluster, including the coordination of workloads and resources. It includes several key components:
+
+API Server: Acts as the frontend of the Kubernetes control plane. It exposes the Kubernetes API, which is used by users, administrators, and external components to interact with the cluster.
+Scheduler: Responsible for assigning workloads (pods) to worker nodes based on resource availability and specific scheduling policies.
+Controller Manager: Runs various controller processes that handle routine tasks, such as maintaining the desired state of the system by managing the life cycle of nodes, endpoints, and others.
+etcd: A distributed key-value store that stores all cluster data, including configuration and state. It's the single source of truth for the cluster's state.
+Worker Nodes: Worker nodes run the applications and workloads. Each worker node contains the following components:
+
+Kubelet: An agent that runs on each node. It ensures that containers are running in a Pod and communicates with the master node.
+Kube-proxy: A network proxy that runs on each node and maintains network rules. It manages network communication for services within the cluster.
+Container Runtime: Software responsible for running containers. Common examples include Docker, containerd, and CRI-O.
+Pods: The smallest deployable units in Kubernetes, which encapsulate one or more containers. Pods share storage and network resources and have specifications for how to run each container.
+
+Services: An abstraction that defines a logical set of Pods and a policy for accessing them. Services enable communication between different parts of the application without needing to know Pod details.
+
+ConfigMaps and Secrets: Mechanisms for managing configuration data and sensitive information like passwords, respectively, which can be injected into containers at runtime.
+
+Kubernetes Workflow
+Deploy Application: The user defines the application deployment, including container images, replicas, and other settings, in a YAML or JSON file, and submits it to the Kubernetes API Server.
+
+Scheduler Assigns Pods: The Scheduler assigns the Pods to the most suitable worker nodes based on resource availability and other constraints.
+
+Kubelet Manages Pods: The Kubelet on each worker node pulls the specified container images, starts the containers, and ensures they are running as expected.
+
+Service Exposure: Kubernetes creates a Service to expose the Pods, making them accessible internally within the cluster or externally if configured.
+
+Monitoring and Scaling: The Controller Manager monitors the cluster's state and maintains the desired number of replicas, scaling the application up or down as needed.
+
+Load Balancing and Networking: Kube-proxy manages load balancing and network traffic between Pods, ensuring that services are available and scalable.
+
+Configuration and Secret Management: ConfigMaps and Secrets are used to inject configuration data and sensitive information into containers, ensuring secure and flexible application deployment.
+
+This architecture and workflow enable Kubernetes to manage containerized applications efficiently, ensuring high availability, scalability, and flexibility.
+
+Below is a simplified representation of the Kubernetes architecture:
+                           +-------------------------------+
+                           |           Master Node         |
+                           |                               |
+                           | +----------+  +-------------+ |
+                           | | API       |  | Scheduler   | |
+                           | | Server    |  +-------------+ |
+                           | +-----+----+  +-------------+ |
+                           |       |       | Controller  | |
+                           |       |       | Manager     | |
+                           |       |       +-------------+ |
+                           |       |       | etcd        | |
+                           |       |       +-------------+ |
+                           +-------|-----------------------+
+                                   |
+                                   |
+                   +---------------+---------------+
+                   |                               |
+                   |                               |
++------------------v---------------+ +-------------v-----------------+
+|           Worker Node            | |           Worker Node         |
+|                                  | |                                |
+| +---------+  +-----------------+ | | +----------+  +----------------+ |
+| | Kubelet |  | Container       | | | | Kubelet  |  | Container       | |
+| |         |  | Runtime (Docker,| | | |          |  | Runtime         | |
+| |         |  | containerd, etc.)| | | |          |  | (Docker,       | |
+| +---------+  +-----------------+ | | +----------+  +----------------+ |
+| | Kube-   |  | Pod              | | | | Kube-    |  | Pod             | |
+| | proxy   |  | (Containers)     | | | | proxy    |  | (Containers)    | |
+| +---------+  +-----------------+ | | +----------+  +----------------+ |
++-----------------------------------+ +----------------------------------+
+                   |                               |
+                   |                               |
+          +----------------+             +-----------------+
+          |                |             |                 |
+     +----v----+      +----v----+   +----v----+       +----v----+
+     |  Pods   |      |  Pods   |   |  Pods   |       |  Pods   |
+     +---------+      +---------+   +---------+       +---------+
+         ^                ^             ^                 ^
+         |                |             |                 |
+         +----------------+-------------+-----------------+
+                                   |
+                           +-----------------+
+                           |     Services    |
+                           +-----------------+
+
+
+Key Components in the Diagram:
+Master Node:
+
+API Server: Frontend for the Kubernetes control plane.
+Scheduler: Schedules workloads on worker nodes.
+Controller Manager: Manages various controllers that regulate the state of the cluster.
+etcd: Stores all cluster data.
+Worker Nodes:
+
+Kubelet: Node agent that communicates with the master node.
+Container Runtime: Runs containers (e.g., Docker, container).
+Kube-proxy: Manages networking and load balancing.
+Pods: Groups of one or more containers with shared storage/network resources.
+
+Services: Abstractions that expose a set of Pods as a network service.
+
+This diagram provides a high-level view of how components interact in a Kubernetes cluster, facilitating the management of containerized applications.
