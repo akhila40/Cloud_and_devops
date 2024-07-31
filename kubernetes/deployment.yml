@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: html2
+  labels:
+    app: html2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: html2
+  template:
+    metadata:
+      labels:
+        app: html2
+    spec:
+      containers:
+      - name: html2
+        image: nikhilsy/html-image:latest
+        ports:
+        - containerPort: 80
