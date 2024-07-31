@@ -1,0 +1,2 @@
+> kubectl set image deployment/<deployment-name> <name-of-container-inside-deployment>=<new-image>
+  This command updates the image of the running pods managed by the Deployment without changing the YAML file.
