@@ -1,0 +1,130 @@
+Role-Based Access Control (RBAC) in Kubernetes is a mechanism for regulating access to Kubernetes resources and operations based on the roles of individual users or service accounts. RBAC allows administrators to define who can do what within a Kubernetes cluster, providing fine-grained control over permissions.
+
+Key Concepts in RBAC
+Role:
+
+A Role is a set of permissions that define what actions can be performed on what resources within a specific namespace.
+ClusterRole: Similar to a Role but applies cluster-wide, across all namespaces.
+Resources: Objects like Pods, Services, ConfigMaps, etc.
+Verbs: Actions like get, list, create, delete, update, etc.
+RoleBinding:
+
+A RoleBinding grants permissions defined in a Role to a user or a set of users (subjects) within a specific namespace.
+ClusterRoleBinding: Similar to a RoleBinding but grants the permissions cluster-wide.
+Subject:
+
+The entity (user, group, or service account) to which permissions are granted.
+How RBAC Works
+Roles and ClusterRoles: Define what actions (verbs) are allowed on specific resources. Roles are namespace-specific, while ClusterRoles can apply across namespaces.
+
+RoleBindings and ClusterRoleBindings: Associate a Role or ClusterRole with users or service accounts, granting them the defined permissions. RoleBindings apply within a specific namespace, while ClusterRoleBindings apply across the entire cluster.
+
+RBAC Components in Action
+Example 1: Creating a Role
+This example creates a Role named pod-reader that allows users to read Pod information in the default namespace.
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  namespace: default
+  name: pod-reader
+rules:
+- apiGroups: [""]  # "" indicates the core API group
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+
+Example 2: Creating a RoleBinding
+This example binds the pod-reader Role to a user named jane.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: read-pods
+  namespace: default
+subjects:
+- kind: User
+  name: jane
+  apiGroup: rbac.authorization.k8s.io
+roleRef:
+  kind: Role
+  name: pod-reader
+  apiGroup: rbac.authorization.k8s.io
+
+Example 3: Creating a ClusterRole
+A ClusterRole that allows reading ConfigMaps across all namespaces:
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: configmap-reader
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get", "list"]
+
+Example 4: Creating a ClusterRoleBinding
+This example binds the configmap-reader ClusterRole to a service account named default in the kube-system namespace.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: read-configmaps-global
+subjects:
+- kind: ServiceAccount
+  name: default
+  namespace: kube-system
+roleRef:
+  kind: ClusterRole
+  name: configmap-reader
+  apiGroup: rbac.authorization.k8s.io
+
+Benefits of RBAC
+Granular Permissions: Allows precise control over who can do what within the cluster.
+Security: Helps prevent unauthorized access and actions, reducing the risk of accidental or malicious operations.
+Compliance: Assists in meeting compliance requirements by enforcing access control policies.
+Auditing: Makes it easier to audit permissions and actions within the cluster.
+RBAC is an essential feature for managing permissions in a Kubernetes environment, especially in multi-tenant or large-scale deployments where security and control are paramount.
+
+In Kubernetes, a namespace is a logical partitioning of a cluster that allows you to divide cluster resources between multiple users or applications. Namespaces provide a mechanism to isolate resources, such as Pods, Services, and Deployments, into different environments or groups within the same cluster.
+
+Key Features of Namespaces
+Isolation:
+
+Namespaces create boundaries within a Kubernetes cluster, isolating resources and objects. This isolation can help manage resources for different teams, projects, or environments (e.g., development, testing, production).
+Resource Quotas:
+
+Administrators can set resource quotas on namespaces to limit the amount of resources (CPU, memory, etc.) that can be consumed by the objects within that namespace. This helps in managing resource allocation and preventing any single namespace from consuming too many resources.
+Access Control:
+
+Kubernetes RBAC (Role-Based Access Control) policies can be applied at the namespace level, allowing administrators to define permissions specific to each namespace. This provides fine-grained access control and security.
+Name Scoping:
+
+Within a namespace, names for resources like Pods, Services, and Deployments must be unique. However, the same name can be used in different namespaces, which helps in avoiding name conflicts across different projects or environments.
+Use Cases for Namespaces
+Environment Segregation: Separate resources for development, testing, and production environments.
+Team or Project Isolation: Allow different teams or projects to have isolated environments within the same cluster.
+Multi-Tenancy: In multi-tenant scenarios, namespaces can be used to isolate resources and manage access for different tenants.
+Resource Management: Apply resource quotas to ensure fair usage of cluster resources.
+Default Namespaces in Kubernetes
+Kubernetes clusters come with a few default namespaces:
+
+default: The default namespace for resources with no other namespace specified.
+kube-system: Reserved for objects created by the Kubernetes system (e.g., system-level Pods and Services).
+kube-public: A namespace that is readable by all users, including those without authentication. It is typically used for publicly accessible information about the cluster.
+kube-node-lease: Used for node lease objects, which are used in node heartbeat mechanisms.
+Creating and Using Namespaces
+You can create a namespace using the kubectl command-line tool:
+kubectl create namespace my-namespace
+
+To deploy resources into a specific namespace, you can include the namespace field in your resource YAML definition or use the -n or --namespace flag with kubectl commands:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: my-pod
+  namespace: my-namespace
+spec:
+  containers:
+  - name: my-container
+    image: nginx
+
+Or with kubectl:
+kubectl apply -f pod-definition.yaml -n my-namespace
+Namespaces are a powerful tool in Kubernetes for organizing, managing, and securing resources within a cluster.
